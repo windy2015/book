@@ -37,6 +37,19 @@ public class LoginServlet extends HttpServlet {
 		String userPwd = request.getParameter("userPwd");
 		System.out.println("userName === "+userName);
 		System.out.println("userPwd === "+userPwd);
+		//用常量模拟
+		if("admin".equals(userName)){
+			if("123456".equals(userPwd)){
+				request.setAttribute("err_msg", "用户名或密码不正确");
+				request.getRequestDispatcher("web-inf/login.jsp").forward(request, response);
+			}else{
+				request.setAttribute("userName", userName);
+				request.getRequestDispatcher("web-inf/welcome.jsp").forward(request, response);
+			}
+		}else{
+			request.setAttribute("err_msg", "用户名或密码不正确");
+			request.getRequestDispatcher("web-inf/login.jsp").forward(request, response);
+		}
 		
 	}
 	
