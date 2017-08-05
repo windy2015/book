@@ -21,6 +21,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </head>
   <script type="text/javascript">
        function login(){
+    	   // client validate 
+    	   var  name = document.getElementById("userName");
+    	   if(!name){
+    		   alert("用户名不能为空")；
+    		   return;
+    	   }
+    	   
+    	   var password = document.getElementById("userPwd") ;
+    	   if(!password){
+    		   alert("password can not null");
+    		   return;
+    	   }
+    	   
            var loginForm = document.getElementById("loginForm");
            loginForm.submit();     
        } 

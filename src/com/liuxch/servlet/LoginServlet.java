@@ -35,6 +35,19 @@ public class LoginServlet extends HttpServlet {
 		response.setContentType("text/html");
 		String userName = request.getParameter("userName");
 		String userPwd = request.getParameter("userPwd");
+		
+		if("".equals(userName) || userName == null){
+			request.setAttribute("err_msg", "用户名不能为空");
+			request.getRequestDispatcher("web-inf/login.jsp").forward(request, response);
+			return ;
+		}
+		
+		if("".equals(userPwd) || userPwd == null){
+			request.setAttribute("err_msg", "密码不能为空");
+			request.getRequestDispatcher("web-inf/login.jsp").forward(request, response);
+			return ;
+		}
+		
 		System.out.println("userName === "+userName);
 		System.out.println("userPwd === "+userPwd);
 		//用常量模拟
