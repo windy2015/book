@@ -19,31 +19,47 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	-->
   </head>
+  <style type="text/css">
+      .err_field {
+          color:red;
+      }
+  </style>
+  
   <script type="text/javascript">
        function login(){
     	   // client validate 
     	   var  name = document.getElementById("userName");
-    	   if(!name){
-    		   alert("用户名不能为空")；
-    		   return;
+    	   
+    	   var isSubmit = true;
+    	   
+    	 /*   if(!name.value){
+    		  isSubmit = false;
+    		  document.getElementById("err_name").innerHTML="user name can not be null";
+    	   }else{
+    	      document.getElementById("err_name").innerHTML=""; 
     	   }
     	   
     	   var password = document.getElementById("userPwd") ;
-    	   if(!password){
-    		   alert("password can not null");
-    		   return;
-    	   }
+    	   if(!password.value){
+    		  isSubmit = false;
+    		  document.getElementById("err_pwd").innerHTML="password can not be null";
+    	   }else{
+    	       document.getElementById("err_pwd").innerHTML="";
+    	   } */
     	   
            var loginForm = document.getElementById("loginForm");
-           loginForm.submit();     
+           if(isSubmit){
+               loginForm.submit();
+           }     
        } 
   </script>
   
   <body>
     <form action="login" method="post" id="loginForm">
-      Username:<input type="text" name="userName" id="userName"/><br/>
-      passowrd:<input type="password" name="userPwd" id="userPwd"/><br/>
+      Username:<input type="text" name="userName" id="userName"/><label id="err_name" class="err_field">${errMap.name} </label><br/>
+      passowrd:<input type="password" name="userPwd" id="userPwd"/><label id="err_pwd" class="err_field">${errMap.pwd}</label><br/>
       <input type="button" value="login" onclick="login()"/>
+      ${err_msg} 
     </form>
   </body>
 </html>
