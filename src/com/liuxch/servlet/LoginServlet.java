@@ -1,6 +1,10 @@
 package com.liuxch.servlet;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,6 +12,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import com.liuxch.bean.User;
+import com.liuxch.util.DBUtil;
 
 public class LoginServlet extends HttpServlet {
 
@@ -53,21 +61,45 @@ public class LoginServlet extends HttpServlet {
 			return ;
 		}
 		
-		System.out.println("userName === "+userName);
-		System.out.println("userPwd === "+userPwd);
-		//验证用户名和密码
-		if("admin".equals(userName)){
-			if("123456".equals(userPwd)){
-				request.setAttribute("userName", userName);
-				request.getRequestDispatcher("WEB-INF/welcome.jsp").forward(request, response);
-			}else{
-				request.setAttribute("err_msg", "用户名或密码不正确");
-				request.getRequestDispatcher("WEB-INF/login.jsp").forward(request, response);				
+		String sql = "SELECT *FROM USER WHERE USER_NAME=?";		
+		
+		PreparedStatement pst = null;
+		ResultSet rs = null;
+		Connection conn = DBUtil.getConnection();
+		User user = null;
+		
+        try {
+			pst = conn.prepareStatement(sql);
+			pst.setString(1, userName);        
+			rs = pst.executeQuery();     
+			
+			if(rs.next()){
+				user = new User();
+				user.setName(rs.getString("user_name"));
+				user.setPassword(rs.getString("password"));
 			}
-		}else{
-			request.setAttribute("err_msg","用户名或密码不正确");
-			request.getRequestDispatcher("WEB-INF/login.jsp").forward(request, response);
+		} catch (SQLException e) {			
+			e.printStackTrace();
+		}finally{
+			DBUtil.close(rs, pst, conn);
 		}
+        
+        if(user == null){
+        	request.setAttribute("err_msg", "用户名或密码不正确");
+			request.getRequestDispatcher("WEB-INF/login.jsp").forward(request, response);		
+        	return ;
+        }
+        
+        if(userPwd.equals(user.getPassword())){
+        	HttpSession session = request.getSession();
+        	session.setAttribute("userName", user.getName());
+			request.getRequestDispatcher("WEB-INF/welcome.jsp").forward(request, response);
+			return;
+        }		
+    	request.setAttribute("err_msg","用户名或密码不正确");
+		request.getRequestDispatcher("WEB-INF/login.jsp").forward(request, response);
+	
+        
 		
 	}
 	

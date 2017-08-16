@@ -10,13 +10,13 @@ import com.liuxch.exception.SQLRuntimeException;
 
 public class DBUtil {
 	
-	public static final String DRIVER_NAME = "";
+	public static final String DRIVER_NAME = "com.mysql.jdbc.Driver";
 	
-	public static final String DB_URL = "";
+	public static final String DB_URL = "jdbc:mysql://localhost:3306/book?useUnicode=true&characterEncoding=utf8&autoReconnect=true&failOverReadOnly=false";
 	
-	public static final String USER_NAME = "";
+	public static final String USER_NAME = "root";
 	
-	public static final String USER_PWD = "";
+	public static final String USER_PWD = "dir13652";
 	
 	public static Connection getConnection(){
 		Connection conn = null;
@@ -38,7 +38,7 @@ public class DBUtil {
 	/***
 	 * 关闭资源，从小到大的顺序
 	 */
-	public void close(ResultSet rs, Statement st, Connection conn){
+	public static void close(ResultSet rs, Statement st, Connection conn){
 		if(rs!=null){
 			try {
 				rs.close();
@@ -63,5 +63,9 @@ public class DBUtil {
 			}
 		}
 	}
+	
+/*	public static void main(String[] args){
+		System.out.println("conn is "+DBUtil.getConnection());
+	}*/
 
 }
