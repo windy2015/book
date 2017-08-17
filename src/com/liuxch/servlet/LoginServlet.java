@@ -15,11 +15,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.liuxch.bean.User;
+import com.liuxch.exception.DBException;
+import com.liuxch.service.UserService;
 import com.liuxch.util.DBUtil;
 
 public class LoginServlet extends HttpServlet {
 
-	
 	/**
 	 * 
 	 */
@@ -30,81 +31,58 @@ public class LoginServlet extends HttpServlet {
 	}
 
 	public void destroy() {
-		super.destroy(); 
-		
+		super.destroy();
+
 	}
-	
+
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		request.getRequestDispatcher("WEB-INF/login.jsp").forward(request, response);
+		request.getRequestDispatcher("WEB-INF/login.jsp").forward(request,
+				response);
 	}
-	
+
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
 		response.setContentType("text/html");
 		String userName = request.getParameter("userName");
 		String userPwd = request.getParameter("userPwd");
-		Map<String,String> errMap = new HashMap<String,String>();
-		
-		if("".equals(userName) || userName == null){
+		Map<String, String> errMap = new HashMap<String, String>();
+
+		if ("".equals(userName) || userName == null) {
 			errMap.put("name", "user name can not be null");
 		}
-		
-		if("".equals(userPwd) || userPwd == null){
-			errMap.put("pwd", "password can not be null");		
+
+		if ("".equals(userPwd) || userPwd == null) {
+			errMap.put("pwd", "password can not be null");
 		}
-		
-		if(!errMap.isEmpty()){
+
+		if (!errMap.isEmpty()) {
 			request.setAttribute("errMap", errMap);
-			request.getRequestDispatcher("WEB-INF/login.jsp").forward(request, response);
-			return ;
-		}
-		
-		String sql = "SELECT *FROM USER WHERE USER_NAME=?";		
-		
-		PreparedStatement pst = null;
-		ResultSet rs = null;
-		Connection conn = DBUtil.getConnection();
-		User user = null;
-		
-        try {
-			pst = conn.prepareStatement(sql);
-			pst.setString(1, userName);        
-			rs = pst.executeQuery();     
-			
-			if(rs.next()){
-				user = new User();
-				user.setName(rs.getString("user_name"));
-				user.setPassword(rs.getString("password"));
-			}
-		} catch (SQLException e) {			
-			e.printStackTrace();
-		}finally{
-			DBUtil.close(rs, pst, conn);
-		}
-        
-        if(user == null){
-        	request.setAttribute("err_msg", "用户名或密码不正确");
-			request.getRequestDispatcher("WEB-INF/login.jsp").forward(request, response);		
-        	return ;
-        }
-        
-        if(userPwd.equals(user.getPassword())){
-        	HttpSession session = request.getSession();
-        	session.setAttribute("userName", user.getName());
-			request.getRequestDispatcher("WEB-INF/welcome.jsp").forward(request, response);
+			request.getRequestDispatcher("WEB-INF/login.jsp").forward(request,
+					response);
 			return;
-        }		
-    	request.setAttribute("err_msg","用户名或密码不正确");
-		request.getRequestDispatcher("WEB-INF/login.jsp").forward(request, response);
-	
-        
-		
+		}
+
+		UserService userService = new UserService();
+
+		User user = userService.Login(userName, userPwd);
+
+		if (user != null) {
+			HttpSession session = request.getSession();
+			session.setAttribute("userName", user.getName());
+			request.getRequestDispatcher("WEB-INF/welcome.jsp").forward(
+					request, response);
+			return;
+		}
+		request.setAttribute("err_msg", "用户名或密码不正确");
+		request.getRequestDispatcher("WEB-INF/login.jsp").forward(request,
+				response);
+
 	}
-	
+
 	public void init() throws ServletException {
-		
+
 	}
 
 }

@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import com.liuxch.exception.SQLRuntimeException;
+import com.liuxch.exception.DBException;
 
 public class DBUtil {
 	
@@ -30,7 +30,7 @@ public class DBUtil {
 			e.printStackTrace();
 		} catch (SQLException e) {			
 			e.printStackTrace();
-			throw new SQLRuntimeException();
+			throw new DBException();
 		}		
 		return conn;
 	}
