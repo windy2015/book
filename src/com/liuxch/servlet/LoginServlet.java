@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 
 import com.liuxch.bean.User;
 import com.liuxch.exception.DBException;
+import com.liuxch.exception.ParameterException;
 import com.liuxch.service.UserService;
 import com.liuxch.util.DBUtil;
 
@@ -47,26 +48,18 @@ public class LoginServlet extends HttpServlet {
 		response.setContentType("text/html");
 		String userName = request.getParameter("userName");
 		String userPwd = request.getParameter("userPwd");
-		Map<String, String> errMap = new HashMap<String, String>();
-
-		if ("".equals(userName) || userName == null) {
-			errMap.put("name", "user name can not be null");
-		}
-
-		if ("".equals(userPwd) || userPwd == null) {
-			errMap.put("pwd", "password can not be null");
-		}
-
-		if (!errMap.isEmpty()) {
-			request.setAttribute("errMap", errMap);
+		
+		User user = null;
+		
+		try {
+			UserService userService = new UserService();
+		    user = userService.Login(userName, userPwd);
+		} catch (ParameterException e) {
+			request.setAttribute("errMap", e.getErrMap());
 			request.getRequestDispatcher("WEB-INF/login.jsp").forward(request,
 					response);
 			return;
 		}
-
-		UserService userService = new UserService();
-
-		User user = userService.Login(userName, userPwd);
 
 		if (user != null) {
 			HttpSession session = request.getSession();
