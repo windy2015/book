@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 import com.liuxch.bean.User;
 import com.liuxch.exception.DBException;
 import com.liuxch.exception.ParameterException;
+import com.liuxch.exception.ServiceException;
 import com.liuxch.service.UserService;
 import com.liuxch.util.DBUtil;
 
@@ -49,28 +50,24 @@ public class LoginServlet extends HttpServlet {
 		String userName = request.getParameter("userName");
 		String userPwd = request.getParameter("userPwd");
 		
-		User user = null;
-		
 		try {
+			User user = null;
 			UserService userService = new UserService();
 		    user = userService.Login(userName, userPwd);
-		} catch (ParameterException e) {
-			request.setAttribute("errMap", e.getErrMap());
-			request.getRequestDispatcher("WEB-INF/login.jsp").forward(request,
-					response);
-			return;
-		}
-
-		if (user != null) {
-			HttpSession session = request.getSession();
+		    HttpSession session = request.getSession();
 			session.setAttribute("userName", user.getName());
 			request.getRequestDispatcher("WEB-INF/welcome.jsp").forward(
 					request, response);
+		} catch (ParameterException parameterException) {
+			request.setAttribute("errMap", parameterException.getErrMap());
+			request.getRequestDispatcher("WEB-INF/login.jsp").forward(request,
+					response);
 			return;
-		}
-		request.setAttribute("err_msg", "用户名或密码不正确");
-		request.getRequestDispatcher("WEB-INF/login.jsp").forward(request,
-				response);
+		} catch (ServiceException serviceException) {
+			request.setAttribute("err_msg", serviceException.getMessage());
+			request.getRequestDispatcher("WEB-INF/login.jsp").forward(request,
+					response);
+		}		
 
 	}
 

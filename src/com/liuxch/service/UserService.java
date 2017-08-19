@@ -5,10 +5,11 @@ import java.util.Map;
 import com.liuxch.bean.User;
 import com.liuxch.dao.UserDao;
 import com.liuxch.exception.ParameterException;
+import com.liuxch.exception.ServiceException;
 
 public class UserService {
 
-	public User Login(String userName, String password) throws ParameterException{
+	public User Login(String userName, String password) throws ParameterException, ServiceException{
 		
 		ParameterException paraException  = new ParameterException();
 
@@ -29,11 +30,11 @@ public class UserService {
 		UserDao  userDao = new UserDao();		
 		User user = userDao.getUserByName(userName);
 		if(user==null){
-			return user;
+			throw new ServiceException(1000, "用户名或密码错误");
 		}
 		
 		if(!user.getPassword().equals(password)){
-			return null;
+			throw new ServiceException(1000, "用户名或密码错误");
 		}
 		
 		return user;
