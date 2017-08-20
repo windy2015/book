@@ -51,8 +51,9 @@ public class LoginServlet extends HttpServlet {
 		    user = userService.Login(userName, userPwd);
 		    HttpSession session = request.getSession();
 			session.setAttribute(Constants.USER_NAME, user.getName());
-			request.getRequestDispatcher("WEB-INF/welcome.jsp").forward(
-					request, response);
+			/*request.getRequestDispatcher("WEB-INF/welcome.jsp").forward(
+					request, response);*/
+			response.sendRedirect(Constants.DASHBORAD_URL);
 		} catch (ParameterException parameterException) {
 			request.setAttribute(Constants.ERR_MAP, parameterException.getErrMap());
 			request.getRequestDispatcher(LOGIN_PAGE).forward(request,
