@@ -12,7 +12,7 @@ public class Constants {
 	public static final String USER_PWD = "userPwd";
 	public static final String ERR_MAP = "errMap";
 	public static final String ERR_MSG = "err_msg";
-	public static final String DASHBORAD_URL = "/dashboard";
+	public static final String DASHBORAD_URL = "dashboard";
 	
 	
 }
