@@ -10,22 +10,22 @@ import com.liuxch.exception.DBException;
 
 public class DBUtil {
 	
-	public static final String DRIVER_NAME = "com.mysql.jdbc.Driver";
+	public static final String DRIVER_NAME = "driverName";
 	
-	public static final String DB_URL = "jdbc:mysql://localhost:3306/book?useUnicode=true&characterEncoding=utf8&autoReconnect=true&failOverReadOnly=false";
+	public static final String DB_URL = "dbUrl";
 	
-	public static final String USER_NAME = "root";
+	public static final String USER_NAME = "dbName";
 	
-	public static final String USER_PWD = "dir13652";
+	public static final String USER_PWD = "dbPwd";
 	
 	public static Connection getConnection(){
 		Connection conn = null;
 		
-		//1.加载驱动
 		try {
-			Class.forName(DRIVER_NAME);
+			//1.加载驱动
+			Class.forName(PropertiesUtil.getValueByKey(DRIVER_NAME));
 			//2.获取连接
-			conn = DriverManager.getConnection(DB_URL, USER_NAME, USER_PWD);
+			conn = DriverManager.getConnection(PropertiesUtil.getValueByKey(DB_URL), PropertiesUtil.getValueByKey(USER_NAME), PropertiesUtil.getValueByKey(USER_PWD));
 		} catch (ClassNotFoundException e) {		
 			e.printStackTrace();
 		} catch (SQLException e) {			
@@ -64,7 +64,9 @@ public class DBUtil {
 		}
 	}
 	
-/*	public static void main(String[] args){
+  /* public static void main(String[] args){
+    	String name = PropertiesUtil.getValueByKey(DRIVER_NAME);
+    	System.out.println("name is "+name);
 		System.out.println("conn is "+DBUtil.getConnection());
 	}*/
 
